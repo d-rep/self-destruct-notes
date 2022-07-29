@@ -11,23 +11,26 @@ import (
 type Server struct{}
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet || r.Method == http.MethodHead {
-		noteID := strings.TrimPrefix(r.URL.Path, "/")
-		if noteID != "" {
-			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(fmt.Sprintf("You requested the note with ID %q", noteID)))
-			return
-		}
-	}
-
-	if r.Method == http.MethodPost && r.URL.Path == "/" {
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("You posted to /"))
+	if (r.Method == http.MethodGet || r.Method == http.MethodHead) && r.URL.Path != "/" {
+		s.handleGET(w, r)
 		return
 	}
+	if r.Method == http.MethodPost && r.URL.Path == "/" {
+		s.handlePOST(w, r)
+		return
+	}
+	http.NotFound(w, r)
+}
 
-	w.WriteHeader(http.StatusNotFound)
-	w.Write([]byte("Not Found"))
+func (s *Server) handlePOST(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("You posted to /"))
+}
+
+func (s *Server) handleGET(w http.ResponseWriter, r *http.Request) {
+	noteID := strings.TrimPrefix(r.URL.Path, "/")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(fmt.Sprintf("You requested the note with the ID '%s'.", noteID)))
 }
 
 func main() {
