@@ -1,6 +1,8 @@
 package main
 
 import (
+	"embed"
+	_ "embed"
 	"fmt"
 	"html/template"
 	"log"
@@ -18,6 +20,11 @@ type Server struct {
 	RedisCache *cache.Cache
 	BaseURL    string
 }
+
+var (
+	//go:embed dist/*.html
+	layoutFiles embed.FS
+)
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet || r.Method == http.MethodHead {
@@ -164,7 +171,7 @@ func (s *Server) serverError(
 }
 
 func (s *Server) renderTemplate(w http.ResponseWriter, r *http.Request, data interface{}, name string, files ...string) {
-	t := template.Must(template.ParseFiles(files...))
+	t := template.Must(template.ParseFS(layoutFiles, files...))
 	err := t.ExecuteTemplate(w, name, data)
 	if err != nil {
 		panic(err)

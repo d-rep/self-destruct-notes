@@ -5,7 +5,7 @@ and source code from https://github.com/dustinmoris/self-destruct-notes
 
 ## Setup
 
-You will need [Go](https://go.dev/dl/) and [Docker](https://www.docker.com/) installed to compile and run the project.
+You will need to install [Go](https://go.dev/dl/) and [Docker](https://www.docker.com/) to run this project.
 
 ## Run
 
@@ -14,12 +14,18 @@ Use docker to start up a Redis instance locally:
 make docker-start
 ```
 
-Then run the backend web service:
+Then run the backend web service directly:
 ```shell
 make run
 ```
 
 Then the app can be viewed at http://localhost:3000/
+
+Or alternately, you can compile and run as a self-contained binary (HTML templates will be embedded inside the bundled package):
+```shell
+make build
+./self-destruct-notes
+```
 
 ## Data
 
