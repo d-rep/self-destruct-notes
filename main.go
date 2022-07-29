@@ -75,7 +75,6 @@ func (s *Server) handlePOST(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	form := r.PostForm
-	log.Printf("read form: %v", form)
 
 	message := form.Get("message")
 	destruct := false
@@ -88,7 +87,6 @@ func (s *Server) handlePOST(w http.ResponseWriter, r *http.Request) {
 		Data:     []byte(message),
 		Destruct: destruct,
 	}
-	log.Printf("read form values into note: %v", note)
 	key := uuid.NewString()
 	err = s.RedisCache.Set(
 		&cache.Item{
