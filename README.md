@@ -11,7 +11,7 @@ You will need to install [Go](https://go.dev/dl/) and [Docker](https://www.docke
 
 Use docker to start up a Redis instance locally:
 ```shell
-make docker-start
+make docker-start-redis
 ```
 
 Then run the backend web service directly:

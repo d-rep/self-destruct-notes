@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"embed"
 	_ "embed"
 	"fmt"
@@ -181,7 +182,7 @@ func (s *Server) renderTemplate(w http.ResponseWriter, r *http.Request, data int
 const (
 	envRedis        = "REDIS_URL"
 	envPort         = "PORT"
-	defaultRedisURL = "redis://:@localhost:6379/1"
+	defaultRedisURL = "redis://:6379/1"
 	defaultPort     = "3000"
 )
 
@@ -201,7 +202,7 @@ func main() {
 	if len(port) == 0 {
 		port = defaultPort
 	}
-	addr := "localhost:" + port
+	addr := ":" + port
 	baseURL := os.Getenv("BASE_URL")
 	if len(baseURL) == 0 {
 		baseURL = fmt.Sprintf("http://localhost:%s", port)
@@ -211,6 +212,12 @@ func main() {
 		BaseURL:    baseURL,
 	}
 	log.Printf("Starting web server, listening on %s\n", baseURL)
+	pong, err := redisClient.Ping(context.Background()).Result()
+	if err != nil {
+		log.Printf("could not ping redis server %q: %s", redisURL, err)
+	} else {
+		log.Printf("redis client replied to ping with %q", pong)
+	}
 	err = http.ListenAndServe(addr, server)
 	if err != nil {
 		panic(err)
